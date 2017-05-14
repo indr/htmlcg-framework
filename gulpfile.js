@@ -17,8 +17,6 @@ gulp.task('clean', function () {
   del.sync([ dir.dist ]);
 });
 
-gulp.task('build', [ 'clean', 'compile-css', 'compile-js' ]);
-
 gulp.task('compile-css', function () {
   return gulp.src(dir.src + '/css/*.css')
     .pipe(gulp.dest(dir.dist))
@@ -35,5 +33,9 @@ gulp.task('compile-js', function () {
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest(dir.dist));
 });
+
+gulp.task('build', [ 'clean', 'compile-css', 'compile-js' ]);
+
+gulp.task('dist', [ 'build' ]);
 
 gulp.task('default', [ 'build' ]);
