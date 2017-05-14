@@ -1,0 +1,87 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+.debug {
+    background-color: lightgray;
+}
+
+.htmlcg-toolbox {
+    position: absolute;
+    z-index: auto;
+    left: 2%;
+    top: 15%;
+
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+}
+
+.htmlcg-toolbox * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.htmlcg-toolbox .modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+}
+
+.htmlcg-toolbox .modal-content {
+    position: relative;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #999;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 6px;
+    outline: 0;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.htmlcg-toolbox .modal-header {
+    min-height: 16.43px;
+    padding: 15px;
+    border-bottom: 1px solid #e5e5e5;
+
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+
+    background-color: #337ab7;
+}
+
+.htmlcg-toolbox .modal-body {
+    position: relative;
+    padding: 15px;
+}
+
+.htmlcg-toolbox .modal-footer {
+    padding: 15px;
+    text-align: right;
+    border-top: 1px solid #e5e5e5;
+
+    display: block;
+}
+
+.htmlcg-toolbox .htmlcg-dialog-title {
+    color: #fff;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.htmlcg-toolbox td button, .htmlcg-toolbox td input, .htmlcg-toolbox td textarea {
+    width: 100%;
+}

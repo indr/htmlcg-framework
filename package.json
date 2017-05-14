@@ -1,0 +1,33 @@
+{
+  "name": "htmlcg-framework",
+  "version": "0.1.0",
+  "description": "Framework to create HTML templates for CasparCG",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indr/htmlcg-framework.git"
+  },
+  "keywords": [
+    "casparcg",
+    "framework",
+    "html"
+  ],
+  "author": "Reto Inderbitzin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/indr/htmlcg-framework/issues"
+  },
+  "homepage": "https://github.com/indr/htmlcg-framework#readme",
+  "devDependencies": {
+    "browserify": "^14.3.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.1.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
