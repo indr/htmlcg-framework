@@ -3,40 +3,63 @@
 module.exports = function ($, window, document) {
   return function Toolbox () {
     var TAG = 'HtmlCg/Toolbox: ';
+    var self = this;
+
+    var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+    var KEY = 'htmlcg.toolbox.' + filename + '.';
+
+    function btnInvokeOnClick () {
+      var value = self.$toolbox.find('[name="inputInvoke"]').val();
+      window.localStorage.setItem(KEY + '.inputInvoke', value);
+      window.eval(value.replace(/[^a-z0-9]/ig, '') + '()');
+    }
+
+    function btnUpdateOnClick () {
+      var value = self.$toolbox.find('[name="inputUpdate"]').val();
+      window.localStorage.setItem(KEY + '.inputUpdate', value);
+      window.update(value);
+    }
 
     $(function () {
       var $body = $('body');
       $body.addClass('debug');
 
       // console.debug(TAG + 'Appending debug toolbox');
-      var $div = $('<div id="htmlcg-toolbox" class="htmlcg-toolbox"><div class="modal-dialog"><div class="modal-content">' +
+      self.$toolbox = $('<div id="htmlcg-toolbox" class="htmlcg-toolbox"><div class="modal-dialog"><div class="modal-content">' +
         '<div class="modal-header"><div class="htmlcg-dialog-title">htmlcg</div></div>' +
         '<div class="modal-body">' +
         '<table><tr>' +
-        '<td><button type="button" onclick="play()">Play</button></td>' +
-        '<td><button type="button" onclick="next()">Next</button></td>' +
-        '<td><button type="button" onclick="stop()">Stop</button></td>' +
+        '<td><button type="button" name="btnPlay" onclick="play()">Play</button></td>' +
+        '<td><button type="button" name="btnNext" onclick="next()">Next</button></td>' +
+        '<td><button type="button" name="btnStop" onclick="stop()">Stop</button></td>' +
         '</tr><tr>' +
-        '<td colspan="2"><input type="text" id="htmlcg_input_invoke"></td>' +
-        '<td><button type="button" onclick="(function(){ var name = $(\'#htmlcg_input_invoke\').val().replace(/[^a-z0-9]/ig, \'\'); eval(name + \'()\');}())">Invoke</button></td>' +
+        '<td colspan="2"><input type="text" name="inputInvoke" id="htmlcg_input_invoke"></td>' +
+        '<td><button type="button" name="btnInvoke">Invoke</button></td>' +
         '</tr><tr>' +
-        '<td colspan="3"><textarea id="htmlcg_input_update" rows="5"></textarea></td>' +
+        '<td colspan="3"><textarea name="inputUpdate" id="htmlcg_input_update" rows="5"></textarea></td>' +
         '</tr><tr>' +
-        '<td colspan="3"><button type="button" onclick="update($(\'#htmlcg_input_update\').val())">Update</button></td>' +
+        '<td colspan="3"><button type="button" name="btnUpdate">Update</button></td>' +
         '</tr></table>' +
         '</div>' + // modal-body
         '</div></div></div>'
       ).appendTo('body');
 
-      $div.find('.htmlcg-dialog-title').text(document.title);
+      self.$toolbox.find('[name="btnInvoke"]').click(btnInvokeOnClick);
+      self.$toolbox.find('[name="btnUpdate"]').click(btnUpdateOnClick);
 
-      var KEY = 'htmlcg.toolbox.';
+      self.$toolbox.find('.htmlcg-dialog-title').text(document.title);
 
-      $div.css('top', Math.max(0, Math.min(window.innerHeight - $div.outerHeight(), parseInt(window.localStorage.getItem(KEY + '.top')) || Number.MAX_VALUE)));
-      $div.css('left', Math.max(0, Math.min(window.innerWidth - $div.outerWidth(), parseInt(window.localStorage.getItem(KEY + '.left')) || Number.MAX_VALUE)));
+      // Set/reset position
+      self.$toolbox.css('top', Math.max(0, Math.min(window.innerHeight - self.$toolbox.outerHeight(), parseInt(window.localStorage.getItem(KEY + '.top')) || Number.MAX_VALUE)));
+      self.$toolbox.css('left', Math.max(0, Math.min(window.innerWidth - self.$toolbox.outerWidth(), parseInt(window.localStorage.getItem(KEY + '.left')) || Number.MAX_VALUE)));
 
-      $div.find('div.modal-header').css('cursor', 'move').on("mousedown", function (e) {
-        var $drag = $div.addClass('draggable');
+      // Restore input values
+      self.$toolbox.find('[name="inputInvoke"]').val(window.localStorage.getItem(KEY + '.inputInvoke'));
+      self.$toolbox.find('[name="inputUpdate"]').val(window.localStorage.getItem(KEY + '.inputUpdate'));
+
+      // Make toolbox draggable
+      self.$toolbox.find('div.modal-header').css('cursor', 'move').on("mousedown", function (e) {
+        var $drag = self.$toolbox.addClass('draggable');
         var z_idx = $drag.css('z-index'),
           drg_h = $drag.outerHeight(),
           drg_w = $drag.outerWidth(),
@@ -50,9 +73,9 @@ module.exports = function ($, window, document) {
         });
         e.preventDefault(); // disable selection
       }).on("mouseup", function () {
-        $div.removeClass('draggable');
-        window.localStorage.setItem(KEY + '.top', $div.css('top'));
-        window.localStorage.setItem(KEY + '.left', $div.css('left'));
+        self.$toolbox.removeClass('draggable');
+        window.localStorage.setItem(KEY + '.top', self.$toolbox.css('top'));
+        window.localStorage.setItem(KEY + '.left', self.$toolbox.css('left'));
       });
     });
   }
