@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function ($, window, document) {
+module.exports = function ($, window, document, utils) {
   return function Toolbox () {
     var TAG = 'HtmlCg/Toolbox: ';
     var self = this;
@@ -41,6 +41,7 @@ module.exports = function ($, window, document) {
         '<td colspan="3"><button type="button" name="btnUpdate">Update</button></td>' +
         '</tr></table>' +
         '</div>' + // modal-body
+        '<div class="modal-footer"><a href="https://github.com/indr/htmlcg-framework">htmlcg-framework@' + utils.version + '</a></div>' +
         '</div></div></div>'
       ).appendTo('body');
 

@@ -15,13 +15,13 @@ module.exports = function HtmlCg ($, window, document, navigator) {
   // Set window/document title
   if (window && document) {
     var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
-    document.title = filename + ' - ' + document.title + ' - htmlcg ' + utils.version;
+    document.title = filename + ' - ' + document.title;
   }
 
   // Create toolbox in debug mode
   var toolbox = null;
   if (isDebug) {
-    var Toolbox = require('./Toolbox')($, window, document);
+    var Toolbox = require('./Toolbox')($, window, document, utils);
     toolbox = new Toolbox();
   }
 
