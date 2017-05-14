@@ -1,5 +1,7 @@
 'use strict';
 
+var version = require('../../package.json').version;
+
 module.exports = function HtmlCg ($, window, document, navigator) {
 
   var TAG = 'HtmlCg: ';
@@ -195,6 +197,9 @@ module.exports = function HtmlCg ($, window, document, navigator) {
     State: State
   };
 
+  var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+  document.title = filename + ' - ' + document.title + ' - htmlcg ' + version;
+
   if (isDebug) {
     $(function () {
       var $body = $('body');
@@ -202,7 +207,7 @@ module.exports = function HtmlCg ($, window, document, navigator) {
 
       console.debug(TAG + 'Appending template control toolbox');
       var $div = $('<div id="htmlcg-toolbox" class="htmlcg-toolbox"><div class="modal-dialog"><div class="modal-content">' +
-        '<div class="modal-header"><div class="htmlcg-dialog-title">HtmlCg - Template Control</div></div>' +
+        '<div class="modal-header"><div class="htmlcg-dialog-title">htmlcg</div></div>' +
         '<div class="modal-body">' +
         '<table><tr>' +
         '<td><button type="button" onclick="play()">Play</button></td>' +
@@ -216,9 +221,11 @@ module.exports = function HtmlCg ($, window, document, navigator) {
         '</tr><tr>' +
         '<td colspan="3"><button type="button" onclick="update($(\'#htmlcg_input_update\').val())">Update</button></td>' +
         '</tr></table>' +
-        '</div>' +
+        '</div>' + // modal-body
         '</div></div></div>'
       ).appendTo('body');
+
+      $div.find('.htmlcg-dialog-title').text(document.title);
 
       var KEY = 'htmlcg.toolbox.';
 

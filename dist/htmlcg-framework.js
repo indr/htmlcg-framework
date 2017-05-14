@@ -1,5 +1,42 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports={
+  "name": "htmlcg-framework",
+  "version": "0.1.0",
+  "description": "Framework to create HTML templates for CasparCG",
+  "main": "app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indr/htmlcg-framework.git"
+  },
+  "keywords": [
+    "casparcg",
+    "framework",
+    "html"
+  ],
+  "author": "Reto Inderbitzin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/indr/htmlcg-framework/issues"
+  },
+  "homepage": "https://github.com/indr/htmlcg-framework#readme",
+  "devDependencies": {
+    "browserify": "^14.3.0",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.1.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
+
+},{}],2:[function(require,module,exports){
 'use strict';
+
+var version = require('../../package.json').version;
 
 module.exports = function HtmlCg ($, window, document, navigator) {
 
@@ -196,6 +233,9 @@ module.exports = function HtmlCg ($, window, document, navigator) {
     State: State
   };
 
+  var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
+  document.title = filename + ' - ' + document.title + ' - htmlcg ' + version;
+
   if (isDebug) {
     $(function () {
       var $body = $('body');
@@ -203,7 +243,7 @@ module.exports = function HtmlCg ($, window, document, navigator) {
 
       console.debug(TAG + 'Appending template control toolbox');
       var $div = $('<div id="htmlcg-toolbox" class="htmlcg-toolbox"><div class="modal-dialog"><div class="modal-content">' +
-        '<div class="modal-header"><div class="htmlcg-dialog-title">HtmlCg - Template Control</div></div>' +
+        '<div class="modal-header"><div class="htmlcg-dialog-title">htmlcg</div></div>' +
         '<div class="modal-body">' +
         '<table><tr>' +
         '<td><button type="button" onclick="play()">Play</button></td>' +
@@ -217,9 +257,11 @@ module.exports = function HtmlCg ($, window, document, navigator) {
         '</tr><tr>' +
         '<td colspan="3"><button type="button" onclick="update($(\'#htmlcg_input_update\').val())">Update</button></td>' +
         '</tr></table>' +
-        '</div>' +
+        '</div>' + // modal-body
         '</div></div></div>'
       ).appendTo('body');
+
+      $div.find('.htmlcg-dialog-title').text(document.title);
 
       var KEY = 'htmlcg.toolbox.';
 
@@ -249,4 +291,4 @@ module.exports = function HtmlCg ($, window, document, navigator) {
   }
 }((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator);
 
-},{}]},{},[1]);
+},{"../../package.json":1}]},{},[2]);

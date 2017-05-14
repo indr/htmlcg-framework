@@ -68,6 +68,10 @@ body {
     padding: 15px;
 }
 
+.htmlcg-toolbox .modal-body table {
+    width: 100%;
+}
+
 .htmlcg-toolbox .modal-footer {
     padding: 15px;
     text-align: right;
