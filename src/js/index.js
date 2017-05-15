@@ -39,6 +39,9 @@ module.exports = (function ($, window, document, navigator) {
 
   // Make HtmlCg available on window object
   window.HtmlCg = HtmlCg;
+  window.HtmlCg.run = function (template, opts) {
+    return new HtmlCg(template, opts);
+  };
 
   // Return constructor
   return HtmlCg;
