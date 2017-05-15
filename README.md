@@ -1,2 +1,7 @@
 # htmlcg-framework
-Framework to create HTML templates for CasparCG
+
+Framework to create and develop HTML templates for CasparCG.
+
+## Copyright and license
+
+Copyright (c) 2017 Reto Inderbitzin, [MIT](LICENSE)
