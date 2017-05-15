@@ -86,6 +86,9 @@ body {
     font-size: 16px;
 }
 
-.htmlcg-toolbox td button, .htmlcg-toolbox td input, .htmlcg-toolbox td textarea {
+.htmlcg-toolbox button,
+.htmlcg-toolbox input,
+.htmlcg-toolbox select,
+.htmlcg-toolbox textarea {
     width: 100%;
 }

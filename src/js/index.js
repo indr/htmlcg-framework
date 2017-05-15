@@ -1,16 +1,10 @@
 'use strict';
 
-module.exports = function HtmlCg ($, window, document, navigator) {
-  var TAG = 'HtmlCg: ';
-
+module.exports = (function ($, window, document, navigator) {
   var Parser = require('./Parser');
   var State = require('./State');
   var utils = require('./utils')($, window, document, navigator);
   var WindowAdapter = require('./WindowAdapter')(window);
-
-  // Detect debug mode
-  var isDebug = utils.isDebug();
-  console.debug(TAG + 'Debug mode ' + isDebug);
 
   // Set window/document title
   if (window && document) {
@@ -18,24 +12,34 @@ module.exports = function HtmlCg ($, window, document, navigator) {
     document.title = filename + ' - ' + document.title;
   }
 
-  // Create toolbox in debug mode
-  var toolbox = null;
-  if (isDebug) {
-    var Toolbox = require('./Toolbox')($, window, document, utils);
-    toolbox = new Toolbox();
-  }
+  function HtmlCg (template, opts) {
+    var TAG = 'HtmlCg: ';
+    opts = opts || {};
 
-  function run (template, opts) {
+    // Detect debug mode
+    var isDebug = utils.isDebug();
+    console.debug(TAG + 'Debug mode ' + isDebug);
+
+    // Create toolbox in debug mode
+    this.toolbox = null;
+    if (isDebug) {
+      var Toolbox = require('./Toolbox')($, window, document, utils);
+      this.toolbox = new Toolbox(opts);
+    }
+
     new WindowAdapter(template, opts);
+
+    return {
+      isDebug: isDebug,
+      Parser: Parser,
+      State: State,
+      toolbox: this.toolbox
+    };
   }
 
-  window.HtmlCg = {
-    isDebug: isDebug,
-    run: run,
-    Parser: Parser,
-    State: State,
-    toolbox: toolbox
-  };
+  // Make HtmlCg available on window object
+  window.HtmlCg = HtmlCg;
 
-  return window.HtmlCg;
-}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator);
+  // Return constructor
+  return HtmlCg;
+}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator));

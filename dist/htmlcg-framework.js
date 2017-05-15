@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports={
   "name": "htmlcg-framework",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework to create HTML templates for CasparCG",
   "main": "app/index.js",
   "scripts": {
@@ -201,7 +201,10 @@ module.exports = TemplateAdapter;
 'use strict';
 
 module.exports = function ($, window, document, utils) {
-  return function Toolbox () {
+  return function Toolbox (opts) {
+    opts = opts || {};
+    opts.api = Array.isArray(opts.api) ? opts.api : [];
+
     var TAG = 'HtmlCg/Toolbox: ';
     var self = this;
 
@@ -209,8 +212,8 @@ module.exports = function ($, window, document, utils) {
     var KEY = 'htmlcg.toolbox.' + filename + '.';
 
     function btnInvokeOnClick () {
-      var value = self.$toolbox.find('[name="inputInvoke"]').val();
-      window.localStorage.setItem(KEY + '.inputInvoke', value);
+      var value = self.$toolbox.find('[name="selectInvoke"]').val();
+      window.localStorage.setItem(KEY + '.selectInvoke', value);
       window.eval(value.replace(/[^a-z0-9]/ig, '') + '()');
     }
 
@@ -233,7 +236,7 @@ module.exports = function ($, window, document, utils) {
         '<td><button type="button" name="btnNext" onclick="next()">Next</button></td>' +
         '<td><button type="button" name="btnStop" onclick="stop()">Stop</button></td>' +
         '</tr><tr>' +
-        '<td colspan="2"><input type="text" name="inputInvoke" id="htmlcg_input_invoke"></td>' +
+        '<td colspan="2"><select name="selectInvoke"></select></td>' +
         '<td><button type="button" name="btnInvoke">Invoke</button></td>' +
         '</tr><tr>' +
         '<td colspan="3"><textarea name="inputUpdate" id="htmlcg_input_update" rows="5"></textarea></td>' +
@@ -245,6 +248,16 @@ module.exports = function ($, window, document, utils) {
         '</div></div></div>'
       ).appendTo('body');
 
+      var map = function (name) { return '<option value="' + name + '">' + name + '</option>'; };
+
+      var options = opts.api.map(map);
+      if (options.length > 0) {
+        options.push('<option disabled="disabled">---</option>');
+      }
+      options = options.concat([ 'play', 'stop', 'next', 'update' ].map(map));
+
+      self.$toolbox.find('[name="selectInvoke"]').append(options.join());
+
       self.$toolbox.find('[name="btnInvoke"]').click(btnInvokeOnClick);
       self.$toolbox.find('[name="btnUpdate"]').click(btnUpdateOnClick);
 
@@ -255,8 +268,9 @@ module.exports = function ($, window, document, utils) {
       self.$toolbox.css('left', Math.max(0, Math.min(window.innerWidth - self.$toolbox.outerWidth(), parseInt(window.localStorage.getItem(KEY + '.left')) || Number.MAX_VALUE)));
 
       // Restore input values
-      self.$toolbox.find('[name="inputInvoke"]').val(window.localStorage.getItem(KEY + '.inputInvoke'));
-      self.$toolbox.find('[name="inputUpdate"]').val(window.localStorage.getItem(KEY + '.inputUpdate'));
+      self.$toolbox.find('[name="selectInvoke"]').val(window.localStorage.getItem(KEY + '.selectInvoke'));
+      var data = window.localStorage.getItem(KEY + '.inputUpdate');
+      self.$toolbox.find('[name="inputUpdate"]').val(data && data.length > 0 ? data : opts.data);
 
       // Make toolbox draggable
       self.$toolbox.find('div.modal-header').css('cursor', 'move').on("mousedown", function (e) {
@@ -300,7 +314,7 @@ module.exports = function (window) {
     var TAG = 'HtmlCg/WindowAdapter: ';
 
     opts = opts || {};
-    opts.api = opts.api || [];
+    opts.api = Array.isArray(opts.api) ? opts.api : [];
 
     var self = this;
 
@@ -330,17 +344,11 @@ module.exports = function (window) {
 },{"./TemplateAdapter":4}],7:[function(require,module,exports){
 'use strict';
 
-module.exports = function HtmlCg ($, window, document, navigator) {
-  var TAG = 'HtmlCg: ';
-
+module.exports = (function ($, window, document, navigator) {
   var Parser = require('./Parser');
   var State = require('./State');
   var utils = require('./utils')($, window, document, navigator);
   var WindowAdapter = require('./WindowAdapter')(window);
-
-  // Detect debug mode
-  var isDebug = utils.isDebug();
-  console.debug(TAG + 'Debug mode ' + isDebug);
 
   // Set window/document title
   if (window && document) {
@@ -348,27 +356,37 @@ module.exports = function HtmlCg ($, window, document, navigator) {
     document.title = filename + ' - ' + document.title;
   }
 
-  // Create toolbox in debug mode
-  var toolbox = null;
-  if (isDebug) {
-    var Toolbox = require('./Toolbox')($, window, document, utils);
-    toolbox = new Toolbox();
-  }
+  function HtmlCg (template, opts) {
+    var TAG = 'HtmlCg: ';
+    opts = opts || {};
 
-  function run (template, opts) {
+    // Detect debug mode
+    var isDebug = utils.isDebug();
+    console.debug(TAG + 'Debug mode ' + isDebug);
+
+    // Create toolbox in debug mode
+    this.toolbox = null;
+    if (isDebug) {
+      var Toolbox = require('./Toolbox')($, window, document, utils);
+      this.toolbox = new Toolbox(opts);
+    }
+
     new WindowAdapter(template, opts);
+
+    return {
+      isDebug: isDebug,
+      Parser: Parser,
+      State: State,
+      toolbox: this.toolbox
+    };
   }
 
-  window.HtmlCg = {
-    isDebug: isDebug,
-    run: run,
-    Parser: Parser,
-    State: State,
-    toolbox: toolbox
-  };
+  // Make HtmlCg available on window object
+  window.HtmlCg = HtmlCg;
 
-  return window.HtmlCg;
-}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator);
+  // Return constructor
+  return HtmlCg;
+}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator));
 
 },{"./Parser":2,"./State":3,"./Toolbox":5,"./WindowAdapter":6,"./utils":8}],8:[function(require,module,exports){
 'use strict';

@@ -1,7 +1,10 @@
 'use strict';
 
 module.exports = function ($, window, document, utils) {
-  return function Toolbox () {
+  return function Toolbox (opts) {
+    opts = opts || {};
+    opts.api = Array.isArray(opts.api) ? opts.api : [];
+
     var TAG = 'HtmlCg/Toolbox: ';
     var self = this;
 
@@ -9,8 +12,8 @@ module.exports = function ($, window, document, utils) {
     var KEY = 'htmlcg.toolbox.' + filename + '.';
 
     function btnInvokeOnClick () {
-      var value = self.$toolbox.find('[name="inputInvoke"]').val();
-      window.localStorage.setItem(KEY + '.inputInvoke', value);
+      var value = self.$toolbox.find('[name="selectInvoke"]').val();
+      window.localStorage.setItem(KEY + '.selectInvoke', value);
       window.eval(value.replace(/[^a-z0-9]/ig, '') + '()');
     }
 
@@ -33,7 +36,7 @@ module.exports = function ($, window, document, utils) {
         '<td><button type="button" name="btnNext" onclick="next()">Next</button></td>' +
         '<td><button type="button" name="btnStop" onclick="stop()">Stop</button></td>' +
         '</tr><tr>' +
-        '<td colspan="2"><input type="text" name="inputInvoke" id="htmlcg_input_invoke"></td>' +
+        '<td colspan="2"><select name="selectInvoke"></select></td>' +
         '<td><button type="button" name="btnInvoke">Invoke</button></td>' +
         '</tr><tr>' +
         '<td colspan="3"><textarea name="inputUpdate" id="htmlcg_input_update" rows="5"></textarea></td>' +
@@ -45,6 +48,16 @@ module.exports = function ($, window, document, utils) {
         '</div></div></div>'
       ).appendTo('body');
 
+      var map = function (name) { return '<option value="' + name + '">' + name + '</option>'; };
+
+      var options = opts.api.map(map);
+      if (options.length > 0) {
+        options.push('<option disabled="disabled">---</option>');
+      }
+      options = options.concat([ 'play', 'stop', 'next', 'update' ].map(map));
+
+      self.$toolbox.find('[name="selectInvoke"]').append(options.join());
+
       self.$toolbox.find('[name="btnInvoke"]').click(btnInvokeOnClick);
       self.$toolbox.find('[name="btnUpdate"]').click(btnUpdateOnClick);
 
@@ -55,8 +68,9 @@ module.exports = function ($, window, document, utils) {
       self.$toolbox.css('left', Math.max(0, Math.min(window.innerWidth - self.$toolbox.outerWidth(), parseInt(window.localStorage.getItem(KEY + '.left')) || Number.MAX_VALUE)));
 
       // Restore input values
-      self.$toolbox.find('[name="inputInvoke"]').val(window.localStorage.getItem(KEY + '.inputInvoke'));
-      self.$toolbox.find('[name="inputUpdate"]').val(window.localStorage.getItem(KEY + '.inputUpdate'));
+      self.$toolbox.find('[name="selectInvoke"]').val(window.localStorage.getItem(KEY + '.selectInvoke'));
+      var data = window.localStorage.getItem(KEY + '.inputUpdate');
+      self.$toolbox.find('[name="inputUpdate"]').val(data && data.length > 0 ? data : opts.data);
 
       // Make toolbox draggable
       self.$toolbox.find('div.modal-header').css('cursor', 'move').on("mousedown", function (e) {

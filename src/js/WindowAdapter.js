@@ -16,7 +16,7 @@ module.exports = function (window) {
     var TAG = 'HtmlCg/WindowAdapter: ';
 
     opts = opts || {};
-    opts.api = opts.api || [];
+    opts.api = Array.isArray(opts.api) ? opts.api : [];
 
     var self = this;
 
