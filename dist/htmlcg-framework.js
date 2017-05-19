@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports={
   "name": "htmlcg-framework",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Framework to create HTML templates for CasparCG",
   "main": "app/index.js",
   "scripts": {
@@ -211,6 +211,16 @@ module.exports = function ($, window, document, utils) {
     var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
     var KEY = 'htmlcg.toolbox.' + filename + '.';
 
+    var loadOnPlay = true;
+
+    function btnPlayOnClick () {
+      if (loadOnPlay) {
+        btnUpdateOnClick();
+        loadOnPlay = false;
+      }
+      window.play();
+    }
+
     function btnInvokeOnClick () {
       var value = self.$toolbox.find('[name="selectInvoke"]').val();
       window.localStorage.setItem(KEY + '.selectInvoke', value);
@@ -232,9 +242,9 @@ module.exports = function ($, window, document, utils) {
         '<div class="modal-header"><div class="htmlcg-dialog-title">htmlcg</div></div>' +
         '<div class="modal-body">' +
         '<table><tr>' +
-        '<td><button type="button" name="btnPlay" onclick="play()">Play</button></td>' +
-        '<td><button type="button" name="btnNext" onclick="next()">Next</button></td>' +
-        '<td><button type="button" name="btnStop" onclick="stop()">Stop</button></td>' +
+        '<td><button type="button" name="btnPlay">Play</button></td>' +
+        '<td><button type="button" name="btnNext">Next</button></td>' +
+        '<td><button type="button" name="btnStop">Stop</button></td>' +
         '</tr><tr>' +
         '<td colspan="2"><select name="selectInvoke"></select></td>' +
         '<td><button type="button" name="btnInvoke">Invoke</button></td>' +
@@ -258,8 +268,11 @@ module.exports = function ($, window, document, utils) {
 
       self.$toolbox.find('[name="selectInvoke"]').append(options.join());
 
-      self.$toolbox.find('[name="btnInvoke"]').click(btnInvokeOnClick);
-      self.$toolbox.find('[name="btnUpdate"]').click(btnUpdateOnClick);
+      self.$toolbox.find('button[name="btnPlay"]').click(btnPlayOnClick);
+      self.$toolbox.find('button[name="btnNext"]').click(function () { window.next();});
+      self.$toolbox.find('button[name="btnStop"]').click(function () { window.stop(); });
+      self.$toolbox.find('button[name="btnInvoke"]').click(btnInvokeOnClick);
+      self.$toolbox.find('button[name="btnUpdate"]').click(btnUpdateOnClick);
 
       self.$toolbox.find('.htmlcg-dialog-title').text(document.title);
 

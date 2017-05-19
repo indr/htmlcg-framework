@@ -11,6 +11,16 @@ module.exports = function ($, window, document, utils) {
     var filename = window.location.href.substr(window.location.href.lastIndexOf("/") + 1);
     var KEY = 'htmlcg.toolbox.' + filename + '.';
 
+    var loadOnPlay = true;
+
+    function btnPlayOnClick () {
+      if (loadOnPlay) {
+        btnUpdateOnClick();
+        loadOnPlay = false;
+      }
+      window.play();
+    }
+
     function btnInvokeOnClick () {
       var value = self.$toolbox.find('[name="selectInvoke"]').val();
       window.localStorage.setItem(KEY + '.selectInvoke', value);
@@ -32,9 +42,9 @@ module.exports = function ($, window, document, utils) {
         '<div class="modal-header"><div class="htmlcg-dialog-title">htmlcg</div></div>' +
         '<div class="modal-body">' +
         '<table><tr>' +
-        '<td><button type="button" name="btnPlay" onclick="play()">Play</button></td>' +
-        '<td><button type="button" name="btnNext" onclick="next()">Next</button></td>' +
-        '<td><button type="button" name="btnStop" onclick="stop()">Stop</button></td>' +
+        '<td><button type="button" name="btnPlay">Play</button></td>' +
+        '<td><button type="button" name="btnNext">Next</button></td>' +
+        '<td><button type="button" name="btnStop">Stop</button></td>' +
         '</tr><tr>' +
         '<td colspan="2"><select name="selectInvoke"></select></td>' +
         '<td><button type="button" name="btnInvoke">Invoke</button></td>' +
@@ -58,8 +68,11 @@ module.exports = function ($, window, document, utils) {
 
       self.$toolbox.find('[name="selectInvoke"]').append(options.join());
 
-      self.$toolbox.find('[name="btnInvoke"]').click(btnInvokeOnClick);
-      self.$toolbox.find('[name="btnUpdate"]').click(btnUpdateOnClick);
+      self.$toolbox.find('button[name="btnPlay"]').click(btnPlayOnClick);
+      self.$toolbox.find('button[name="btnNext"]').click(function () { window.next();});
+      self.$toolbox.find('button[name="btnStop"]').click(function () { window.stop(); });
+      self.$toolbox.find('button[name="btnInvoke"]').click(btnInvokeOnClick);
+      self.$toolbox.find('button[name="btnUpdate"]').click(btnUpdateOnClick);
 
       self.$toolbox.find('.htmlcg-dialog-title').text(document.title);
 
