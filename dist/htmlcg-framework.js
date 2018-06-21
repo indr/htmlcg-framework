@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports={
   "name": "htmlcg-framework",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Framework to create HTML templates for CasparCG",
   "main": "app/index.js",
   "scripts": {
@@ -155,8 +155,8 @@ function TemplateAdapter (template) {
 
     return function (data) {
       // console.debug(TAG + 'Parsing data', data);
-      data = Parser.parseData(data);
-      invoke.call(self, 'onUpdate', data);
+      data = typeof data === 'object' ? data : Parser.parseData(data);
+      invoke.call(self, 'onUpdate', data || {});
     }.bind(self, data);
   }
 
