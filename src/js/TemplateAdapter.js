@@ -58,8 +58,8 @@ function TemplateAdapter (template) {
 
     return function (data) {
       // console.debug(TAG + 'Parsing data', data);
-      data = Parser.parseData(data);
-      invoke.call(self, 'onUpdate', data);
+      data = typeof data === 'object' ? data : Parser.parseData(data);
+      invoke.call(self, 'onUpdate', data || {});
     }.bind(self, data);
   }
 
