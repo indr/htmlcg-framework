@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports={
   "name": "htmlcg-framework",
   "version": "0.3.0",
@@ -23,13 +23,13 @@ module.exports={
   },
   "homepage": "https://github.com/indr/htmlcg-framework#readme",
   "devDependencies": {
-    "browserify": "^14.3.0",
-    "del": "^2.2.2",
+    "browserify": "^16.2.2",
+    "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^2.1.2",
+    "gulp-uglify": "^3.0.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^2.0.0"
   }
 }
 
@@ -357,10 +357,10 @@ module.exports = function (window) {
 },{"./TemplateAdapter":4}],7:[function(require,module,exports){
 'use strict';
 
-module.exports = (function ($, window, document, navigator) {
+module.exports = (function ($, window, document) {
   var Parser = require('./Parser');
   var State = require('./State');
-  var utils = require('./utils')($, window, document, navigator);
+  var utils = require('./utils')($, window);
   var WindowAdapter = require('./WindowAdapter')(window);
 
   // Set window/document title
@@ -402,28 +402,16 @@ module.exports = (function ($, window, document, navigator) {
 
   // Return constructor
   return HtmlCg;
-}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator));
+}((window.jQuery || window.Zepto), window, (window ? window.document : undefined)));
 
 },{"./Parser":2,"./State":3,"./Toolbox":5,"./WindowAdapter":6,"./utils":8}],8:[function(require,module,exports){
 'use strict';
 
-module.exports = function ($, window, document, navigator) {
+module.exports = function ($, window) {
   var TAG = 'HtmlCg/Utils: ';
 
   function isDebug () {
-    var result = false;
-    if ($ && window && window.location && document) {
-      var isCasparCg = true;
-      if (navigator && typeof navigator.userAgent === 'string') {
-        // console.log(TAG + 'Navigator: ' + navigator.userAgent);
-        isCasparCg = navigator.userAgent.indexOf('Mozilla/') >= 0
-          && navigator.userAgent.indexOf('AppleWebKit/') >= 0
-          && navigator.userAgent.indexOf('Chrome/') >= 0
-          && navigator.userAgent.indexOf('Safari/') >= 0;
-      }
-      result = !isCasparCg || window.location.search === '?debug';
-    }
-    return result;
+    return window && window.location && (window.location.search.match(/[?&]debug=([^&$]+)/) || [])[1] === 'true'
   }
 
   var version = require('../../package.json').version;
