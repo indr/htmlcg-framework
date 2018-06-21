@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = (function ($, window, document, navigator) {
+module.exports = (function ($, window, document) {
   var Parser = require('./Parser');
   var State = require('./State');
-  var utils = require('./utils')($, window, document, navigator);
+  var utils = require('./utils')($, window);
   var WindowAdapter = require('./WindowAdapter')(window);
 
   // Set window/document title
@@ -45,4 +45,4 @@ module.exports = (function ($, window, document, navigator) {
 
   // Return constructor
   return HtmlCg;
-}((window.jQuery || window.Zepto), window, (window ? window.document : undefined), navigator));
+}((window.jQuery || window.Zepto), window, (window ? window.document : undefined)));
